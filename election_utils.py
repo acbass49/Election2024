@@ -357,3 +357,14 @@ def run_simulation(preds, simulation_num):
     
     return trump_won, data
 
+# #reset tracking csv
+# win_perc = 0.18
+
+# from datetime import datetime
+# current_date = datetime.now().date()
+
+# pd.DataFrame({
+#     'Candidate':['Trump', 'Biden'],
+#     'Win Percentage':[win_perc, 1-win_perc], #perhaps add a confidence interval to this?
+#     'Date' : current_date
+# }).to_csv("./data/tracking_data.csv", index = False)
