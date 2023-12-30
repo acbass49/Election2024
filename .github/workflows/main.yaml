@@ -20,5 +20,5 @@ jobs:
           pip install -r requirements.txt
       - name: Run data pipeline script
         run: |
-          python3 run_daily_pipeline.py
+          python run_daily_pipeline.py
         shell: bash
