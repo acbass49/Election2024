@@ -1,0 +1,24 @@
+name: 'Update Election Datasets'
+
+on:
+  schedule:
+    - cron: "0 12 * * *"
+jobs:
+  update_election:
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run data pipeline script
+        run: |
+          python3 run_daily_pipeline.py
+        shell: bash
