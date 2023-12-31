@@ -10,7 +10,7 @@ I created an election model using hierarchal regression of the latest polls for 
 2. Process the data in Python
 3. Estimate the model in Python (pymc)
 4. Save the daily outputs in this repository
-5. Later in the day, my website loads these outputs (also via github actions) and generates three figures displayed on my website.
+5. Later in the day, my website loads these outputs (also via github actions) and generates three figures displayed on my quarto website.
 
 I wrote up a description of my modeling methodology here.
 
