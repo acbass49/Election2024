@@ -27,11 +27,11 @@ jobs:
           git clone "https://github.com/acbass49/Election2024.git"
       - name: Run data pipeline script
         run: |
+          cd Election2024
           python run_daily_pipeline.py
         shell: bash
       - name: push new version
         run: |
-          cd personal_quarto_site
           git remote set-url origin https://x-access-token:${{ secrets.SECRETS }}@github.com/acbass49/Election2024.git
           git add .
           git commit -m "Daily election update"
