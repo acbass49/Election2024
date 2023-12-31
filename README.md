@@ -12,6 +12,6 @@ I created an election model using hierarchal regression of the latest polls for 
 4. Save the daily outputs in this repository
 5. Later in the day, my website loads these outputs (also via github actions) and generates three figures displayed on my quarto website.
 
-I wrote up a description of my modeling methodology here.
+If you are looking for technical description of the methodology, that is here.
 
-Feel free to clone my work or reach out if there are questions.
+Feel free to clone my work or use in any way.
