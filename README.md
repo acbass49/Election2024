@@ -4,7 +4,7 @@ I created an election model using hierarchal regression of the latest polls for 
 
 ![](data_pipeline.png)
 
-### I visualized my data pipeline above and decribe it below. This runs daily via github actions.
+### My data pipeline is visualized above and decribed below. This runs daily via github actions.
 
 1. Load the polling data freely available on fivethirtyeight from a URL.
 2. Process the data in Python
