@@ -29,7 +29,8 @@ prob_data = pd.DataFrame({
     'Trump Win Prob.':list(preds.values())
 }) \
     .merge(to_join, on='State') \
-    .assign(State = lambda x:x.Abbreviation)
+    .assign(State = lambda x:x.Abbreviation) \
+    .drop(columns = ['Abbreviation'])
 
 tracking_data = pd.read_csv("./data/tracking_data.csv")
 current_date = datetime.now().date()
