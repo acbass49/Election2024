@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SECRETS }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -18,7 +20,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+      - name: clone repository
+        run: |
+          git config --global user.name "github actions"
+          git config --global user.email "acbass49@gmail.com"
+          git clone "https://github.com/acbass49/Election2024.git"
       - name: Run data pipeline script
         run: |
           python run_daily_pipeline.py
+        shell: bash
+      - name: push new version
+        run: |
+          cd personal_quarto_site
+          git remote set-url origin https://x-access-token:${{ secrets.SECRETS }}@github.com/acbass49/Election2024.git
+          git add .
+          git commit -m "Daily data update"
+          git push
         shell: bash
