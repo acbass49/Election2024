@@ -34,6 +34,6 @@ jobs:
           cd personal_quarto_site
           git remote set-url origin https://x-access-token:${{ secrets.SECRETS }}@github.com/acbass49/Election2024.git
           git add .
-          git commit -m "Daily data update"
+          git commit -m "Daily election update"
           git push
         shell: bash
