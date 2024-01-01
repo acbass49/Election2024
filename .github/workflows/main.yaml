@@ -29,5 +29,5 @@ jobs:
         with:
             # Include all csv files from the `data` directory
             file-path: data/*.csv
-            commit-msg: Update resources
+            commit-msg: Daily election update
             github-token: ${{ secrets.SECRETS }}
