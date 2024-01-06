@@ -8,6 +8,7 @@ from election_utils import get_data, \
 import pandas as pd
 import numpy as np
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 # Fetch Data
 y_vec, x_matrix, state_dict = get_data()
@@ -48,6 +49,20 @@ new_row = pd.DataFrame({
 })
 
 tracking_data = pd.concat([tracking_data, new_row])
+
+# Plotting my data
+win_perc = sum(sim_data.winner == 'Trump')/sim_data.shape[0]
+
+plot = plt.figure()
+plot.set_figwidth(6)
+plot.set_figheight(4)
+plt.hist(sim_data.query("winner == 'Trump'")[['points']], bins=45, color='red',edgecolor='black')
+plt.hist(sim_data.query("winner == 'Biden'")[['points']], bins=50, color='skyblue',edgecolor='black')
+plt.xlabel('EC Votes Trump Wins')
+plt.ylabel('Simulation Wins')
+plt.title(f'Today Trump Won {round(win_perc*100,2)}% of the Election Simulations')
+plt.legend(["Trump", "Biden"], loc ="upper right", title='Winner')
+plt.savefig('./figures/simulations.png')
 
 # Saving Data
 prob_data.to_csv("./data/state_probabilities.csv", index = False)
