@@ -357,6 +357,20 @@ def run_simulation(preds, simulation_num):
     
     return trump_won, data
 
+def calc_simulation_interval(sim_data:pd.DataFrame, conf_level:int=95):
+    '''
+    Sample from the 50,000 daily simulations finding the upper and lower bounds given percentile(conf_level)
+    '''
+    assert conf_level > 0 and conf_level < 100
+    conf_data = [sum(sim_data.winner.sample(n=100) == "Trump")/100 for x in range(1000)]
+    conf_data = np.array(conf_data)
+    s = (100 - conf_level)/2
+    UB = 100 - s
+    LB = s
+    res = np.percentile(conf_data, [LB, UB])
+    return res[0], res[1]
+    
+
 # # #reset tracking csv
 # win_perc = 0.18
 

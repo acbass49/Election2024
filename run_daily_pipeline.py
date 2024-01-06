@@ -4,7 +4,7 @@
 
 from election_utils import get_data, \
     make_state_predictions, estimate_bayes_heirarchal, \
-    run_simulation
+    run_simulation, calc_simulation_interval
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -32,13 +32,19 @@ prob_data = pd.DataFrame({
     .assign(State = lambda x:x.Abbreviation) \
     .drop(columns = ['Abbreviation'])
 
+# Calculate Simulation Confidence Interval
+LB, UB = calc_simulation_interval(sim_data)
+
+# Add new row to tracker
 tracking_data = pd.read_csv("./data/tracking_data.csv")
 current_date = datetime.now().date()
 
 new_row = pd.DataFrame({
     'Candidate':['Trump', 'Biden'],
     'Win Percentage':[win_perc, 1-win_perc], #perhaps add a confidence interval to this?
-    'Date' : current_date
+    'Date' : current_date,
+    'LB' : [LB,(1-win_perc)-(win_perc-LB)],
+    'UB' : [UB,(1-win_perc)+(UB-win_perc)]
 })
 
 tracking_data = pd.concat([tracking_data, new_row])
@@ -47,8 +53,3 @@ tracking_data = pd.concat([tracking_data, new_row])
 prob_data.to_csv("./data/state_probabilities.csv", index = False)
 sim_data.to_csv("./data/simulation_data.csv", index = False)
 tracking_data.to_csv("./data/tracking_data.csv", index = False)
-
-# Next Steps
-# Create Github Action Workflow for this repository https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-# Create Github Action Workflow for website repository
-# Write post and transfer graphs I have already made
