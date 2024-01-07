@@ -51,8 +51,6 @@ new_row = pd.DataFrame({
 tracking_data = pd.concat([tracking_data, new_row])
 
 # Plotting my data
-win_perc = sum(sim_data.winner == 'Trump')/sim_data.shape[0]
-
 plot = plt.figure()
 plot.set_figwidth(6)
 plot.set_figheight(4)
