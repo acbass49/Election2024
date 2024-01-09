@@ -28,6 +28,8 @@ jobs:
         uses: test-room-7/action-update-file@v1
         with:
             # Include all csv files from the `data` directory
-            file-path: data/*.csv
+            file-path: |
+              data/*.csv
+              figures/*.png
             commit-msg: Daily election update
             github-token: ${{ secrets.SECRETS }}
