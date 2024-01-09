@@ -150,6 +150,12 @@ def get_data():
     data.drop(columns = ['methodology', 'population', 'fte_grade'], inplace = True)
     
     data = pd.concat([data,method,population], axis=1)
+
+    cols_to_iterate = [x for x in data.columns if 'pct' != x]
+    for col in cols_to_iterate:
+        data[col] = data[col].fillna(data[col].mean())
+
+    data.dropna(subset = ['pct'], inplace=True)
     
     return data['pct'].values, \
         data, \
