@@ -133,6 +133,14 @@ def get_data():
             )
     )
     
+    data.state = data.state.replace({
+        'Nebraska CD-1':'NE-1',
+        'Nebraska CD-2':'NE-2',
+        'Nebraska CD-3':'NE-3',
+        'Maine CD-1':'ME-1',
+        'Maine CD-2':'ME-2',
+    })
+    
     states = data.state.value_counts().index.to_list()
     states_dict = {x:i for i,x in enumerate(states)}
     data.state = data.state.replace(states_dict)
@@ -329,9 +337,8 @@ def run_simulation(preds, simulation_num):
     'Vermont': 3,
     'New Jersey': 14,
     'National': 1,
+    'NE-1': 1,
     'NE-2': 1,
-    'NE-1': 1,
-    'NE-1': 1,
     'NE-3':1,
     'ME-2': 1,
     'ME-1': 1,
