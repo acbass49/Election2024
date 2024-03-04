@@ -1,6 +1,6 @@
 # Election Model Using Bayesian Heirarchal Regression
 
-I created an election model using hierarchal regression of the latest polls for 2024 US Presidential Election. The visualizations of this data will be tracked and refreshed daily on my website [here](https://alexbass.me).
+I created an election model using hierarchal regression of the latest polls for 2024 US Presidential Election. You can follow daily updates on my 2024 US Presidential Election Dashboard [here](https://alexbass.me/projects/election_model_2024/).
 
 Daily updated predictions, election simulations, and tracking data will be stored in the data folder for use by others if desired.
 
@@ -12,8 +12,8 @@ Daily updated predictions, election simulations, and tracking data will be store
 2. Process the data in Python
 3. Estimate the model in Python (pymc)
 4. Save the daily outputs in this repository
-5. Later in the day, my website loads these outputs (also via github actions) and generates three figures displayed on my quarto website. This step is done in my quarto website repository; not in this one.
+5. Later in the day, my dashboard loads these outputs (also via github actions) and generates three interactive figures displayed on my quarto website. This step is done in my quarto website repository; not in this one.
 
-If you are looking for technical description of the model methodology, that is [here](https://alexbass.me/projects/election_model_2024/methodology.pdf).
+If you are looking for technical description of the model methodology, that is [here](https://alexbass.me/posts/election_2024/methodology.pdf).
 
 Feel free to clone my work or use in any way.
