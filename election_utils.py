@@ -5,6 +5,7 @@
 import pandas as pd
 import numpy as np
 import pymc as pm
+import arviz as az
 
 def get_data():
 
@@ -169,6 +170,9 @@ def get_data():
         data, \
         states_dict
 
+def get_prior(var, metric, priors):
+    return priors.query("var == @var")[metric].iloc[0]
+
 def make_state_predictions(model, states_dict, x_matrix, trace):
     with model:
         pm.set_data({
@@ -279,6 +283,83 @@ def estimate_bayes_heirarchal(y_vec, x_matrix, state_dict):
         trace = pm.sample(1000, tune=1000, cores=1)
 
         return model, trace
+    
+def estimate_bayes_heirarchal_cstm_priors(y_vec, x_matrix, state_dict, priors):
+    n_state = len(state_dict)
+    state_r = x_matrix.state.values
+
+    with pm.Model() as model:
+
+        # b0 - intercept 
+        mu_b0 = pm.Normal(
+            'mu_b0', 
+            get_prior('mu_b0', 'mean', priors), 
+            sigma=get_prior('mu_b0', 'sd', priors))
+        sigma_b0 = pm.HalfCauchy('sigma_b0', get_prior('sigma_b0', 'mean', priors))
+        
+        # Random intercepts as offsets
+        mns = []
+        sds = []
+        
+        for state,num in state_dict.items():
+            if not priors.query('state == @state').empty:
+                mn = priors.query('state == @state')['mean'].iloc[0]
+                sd = priors.query('state == @state')['sd'].iloc[0]
+            else:
+                mn = 0,
+                sd = 1
+            mns.append(mn)
+            sds.append(sd)
+        
+        a_offset = pm.Normal('a_offset', mu=mns, sigma=sds, shape=n_state)
+        b0 = pm.Deterministic("Intercept", mu_b0 + a_offset * sigma_b0)
+
+        # Setting data
+        X1 = pm.MutableData("X1", x_matrix['Live Phone'].values)
+        X2 = pm.MutableData("X2", x_matrix['Online Panel'].values)
+        X3 = pm.MutableData("X3", x_matrix['Other'].values)
+        X4 = pm.MutableData("X4", x_matrix['month'].values)
+        X5 = pm.MutableData("X5", x_matrix['rep_poll'].values)
+        X6 = pm.MutableData("X6", x_matrix['sample_size'].values)
+        X7 = pm.MutableData("X7", x_matrix['MultiCandidate'].values)
+        X8 = pm.MutableData("X8", x_matrix['lv'].values)
+        X9 = pm.MutableData("X9", x_matrix['rv'].values)
+        X10 = pm.MutableData("X10", x_matrix['grade'].values)
+        Y_obs = pm.MutableData("Y_obs", y_vec)
+        states = pm.MutableData("states", state_r)
+
+        b1 = pm.Normal("Live Phone", mu=get_prior('Live Phone', 'mean', priors), sigma=get_prior('Live Phone', 'sd', priors))
+        b2 = pm.Normal("Online Panel", mu=get_prior('Online Panel', 'mean', priors), sigma=get_prior('Online Panel', 'sd', priors))
+        b3 = pm.Normal("Other", mu=get_prior('Other', 'mean', priors), sigma=get_prior('Other', 'sd', priors))
+        b4 = pm.Normal("month", mu=get_prior('month', 'mean', priors), sigma=get_prior('month', 'sd', priors))
+        b5 = pm.Normal("rep_poll", mu=get_prior('rep_poll', 'mean', priors), sigma=get_prior('rep_poll', 'sd', priors))
+        b6 = pm.Normal("sample_size", mu=get_prior('sample_size', 'mean', priors), sigma=get_prior('sample_size', 'sd', priors))
+        b7 = pm.Normal("MultiCandidate", mu=get_prior('MultiCandidate', 'mean', priors), sigma=get_prior('MultiCandidate', 'sd', priors))
+        b8 = pm.Normal("lv", mu=get_prior('lv', 'mean', priors), sigma=get_prior('lv', 'sd', priors))
+        b9 = pm.Normal("rv", mu=get_prior('rv', 'mean', priors), sigma=get_prior('rv', 'sd', priors))
+        b10 = pm.Normal("grade", mu=get_prior('grade', 'mean', priors), sigma=get_prior('grade', 'sd', priors))
+
+        formula =  (
+            b0[states] + 
+            b1*X1 + 
+            b2*X2 + 
+            b3*X3 + 
+            b4*X4 + 
+            b5*X5 +
+            b6*X6 +
+            b7*X7 +
+            b8*X8 +
+            b9*X9 +
+            b10*X10
+        )
+        
+        s = pm.HalfNormal('error',sigma =get_prior('error', 'mean', priors))
+
+        obs = pm.Normal('y', mu = formula, sigma=s, observed=Y_obs)
+
+        trace = pm.sample(1000, tune=1000, cores=1)
+
+        return model, trace
 
 def run_simulation(preds, simulation_num):
     '''
@@ -382,8 +463,21 @@ def calc_simulation_interval(sim_data:pd.DataFrame, conf_level:int=95):
     LB = s
     res = np.percentile(conf_data, [LB, UB])
     return res[0], res[1]
-    
 
+def save_priors(trace, state_dict):
+    priors = az.summary(trace, kind="stats", var_names=['~Intercept']) \
+        .reset_index() \
+        .rename(columns = {'index':'var'}) \
+        [['var', 'mean', 'sd']]
+    states_df = pd.DataFrame({
+        'state' : list(state_dict.keys()),
+        'var' : [f'a_offset[{x}]' for x in list(state_dict.values())]
+    })
+    priors = priors.merge(states_df, how='left', on='var')
+    priors = priors.assign(
+        sd = lambda x:np.where(x.sd<=0, 0.01, x.sd)
+    )
+    priors.to_csv('./data/priors.csv', index=False)
 # # #reset tracking csv
 # win_perc = 0.18
 

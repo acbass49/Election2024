@@ -1,0 +1,63 @@
+var,mean,sd,state
+mu_b0,0.5,0.008,
+a_offset[0],-0.315,0.042,Pennsylvania
+a_offset[1],-0.283,0.041,Michigan
+a_offset[2],-0.169,0.042,Arizona
+a_offset[3],-0.081,0.041,Georgia
+a_offset[4],-0.344,0.046,Wisconsin
+a_offset[5],-0.149,0.046,Nevada
+a_offset[6],-0.055,0.048,North Carolina
+a_offset[7],-1.612,0.078,California
+a_offset[8],0.177,0.055,Ohio
+a_offset[9],-0.021,0.054,Texas
+a_offset[10],-0.098,0.055,Florida
+a_offset[11],-0.648,0.058,New Hampshire
+a_offset[12],-1.095,0.066,New York
+a_offset[13],1.132,0.075,Tennessee
+a_offset[14],-0.635,0.066,Virginia
+a_offset[15],0.239,0.061,Iowa
+a_offset[16],0.556,0.069,Missouri
+a_offset[17],-0.713,0.068,Colorado
+a_offset[18],0.676,0.076,Montana
+a_offset[19],0.485,0.077,South Carolina
+a_offset[20],-1.753,0.096,Massachusetts
+a_offset[21],-1.139,0.085,Washington
+a_offset[22],-0.663,0.083,Minnesota
+a_offset[23],-1.515,0.103,Maryland
+a_offset[24],-1.018,0.095,Illinois
+a_offset[25],-0.981,0.107,Connecticut
+a_offset[26],0.231,0.098,Utah
+a_offset[27],1.02,0.111,Oklahoma
+a_offset[28],0.113,0.094,Alaska
+a_offset[29],-0.813,0.103,New Mexico
+a_offset[30],0.455,0.098,Kansas
+a_offset[31],-0.433,0.11,Maine
+a_offset[32],1.039,0.111,South Dakota
+a_offset[33],0.743,0.11,Alabama
+a_offset[34],0.991,0.121,Kentucky
+a_offset[35],-2.047,0.154,Vermont
+a_offset[36],-1.161,0.133,Rhode Island
+a_offset[37],1.248,0.136,Arkansas
+a_offset[38],0.597,0.129,Nebraska
+a_offset[39],-0.987,0.133,Oregon
+a_offset[40],0.785,0.133,Indiana
+a_offset[41],0.769,0.134,ME-2
+a_offset[42],-1.188,0.133,ME-1
+a_offset[43],0.615,0.177,Mississippi
+a_offset[44],0.483,0.17,Louisiana
+a_offset[45],1.313,0.177,Idaho
+a_offset[46],1.745,0.183,West Virginia
+a_offset[47],2.088,0.2,North Dakota
+a_offset[48],2.654,0.215,Wyoming
+Live Phone,0.022,0.005,
+Online Panel,0.028,0.005,
+Other,0.026,0.005,
+month,0.0,0.01,
+rep_poll,-0.001,0.003,
+sample_size,0.0,0.01,
+MultiCandidate,0.012,0.002,
+lv,-0.003,0.004,
+rv,-0.003,0.004,
+grade,0.007,0.003,
+sigma_b0,0.104,0.004,
+error,0.023,0.001,

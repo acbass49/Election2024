@@ -4,7 +4,8 @@
 
 from election_utils import get_data, \
     make_state_predictions, estimate_bayes_heirarchal, \
-    run_simulation, calc_simulation_interval
+    run_simulation, calc_simulation_interval, \
+    estimate_bayes_heirarchal_cstm_priors, save_priors
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -12,9 +13,11 @@ import matplotlib.pyplot as plt
 
 # Fetch Data
 y_vec, x_matrix, state_dict = get_data()
+priors = pd.read_csv('./data/priors.csv')
 
 # Estimate Model
-model, trace = estimate_bayes_heirarchal(y_vec, x_matrix, state_dict)
+model, trace = estimate_bayes_heirarchal_cstm_priors(y_vec, x_matrix, state_dict, priors)
+save_priors(trace, state_dict)
 
 # Predict State Level Probabilities
 preds = make_state_predictions(model, state_dict, x_matrix, trace)
@@ -49,18 +52,6 @@ new_row = pd.DataFrame({
 })
 
 tracking_data = pd.concat([tracking_data, new_row])
-
-# Plotting my data
-plot = plt.figure()
-plot.set_figwidth(6)
-plot.set_figheight(4)
-plt.hist(sim_data.query("winner == 'Trump'")[['points']], bins=45, color='red',edgecolor='black')
-plt.hist(sim_data.query("winner == 'Biden'")[['points']], bins=50, color='skyblue',edgecolor='black')
-plt.xlabel('EC Votes Trump Wins')
-plt.ylabel('Simulation Wins')
-plt.title(f'Today Trump Won {round(win_perc*100,2)}% of the Election Simulations')
-plt.legend(["Trump", "Biden"], loc ="upper right", title='Winner')
-plt.savefig('./figures/simulations.png')
 
 # Saving Data
 prob_data.to_csv("./data/state_probabilities.csv", index = False)
