@@ -1,63 +1,63 @@
 var,mean,sd,state
-mu_b0,0.5,0.003,
-a_offset[0],-0.315,0.017,Pennsylvania
-a_offset[1],-0.082,0.018,Georgia
-a_offset[2],-0.283,0.019,Michigan
-a_offset[3],-0.169,0.018,Arizona
-a_offset[4],-0.344,0.02,Wisconsin
-a_offset[5],-0.055,0.02,North Carolina
-a_offset[6],-0.148,0.02,Nevada
-a_offset[7],-1.617,0.03,California
-a_offset[8],0.178,0.025,Ohio
-a_offset[9],-0.02,0.026,Texas
-a_offset[10],-0.098,0.027,Florida
-a_offset[11],-0.65,0.027,New Hampshire
-a_offset[12],-1.099,0.029,New York
-a_offset[13],1.137,0.033,Tennessee
-a_offset[14],0.24,0.03,Iowa
-a_offset[15],-0.637,0.031,Virginia
-a_offset[16],0.559,0.033,Missouri
-a_offset[17],-0.714,0.031,Colorado
-a_offset[18],0.68,0.037,Montana
-a_offset[19],0.489,0.039,South Carolina
-a_offset[20],-1.147,0.042,Washington
-a_offset[21],-0.666,0.045,Minnesota
-a_offset[22],-1.763,0.043,Massachusetts
-a_offset[23],-1.526,0.049,Maryland
-a_offset[24],-1.027,0.049,Illinois
-a_offset[25],0.116,0.054,Alaska
-a_offset[26],0.239,0.055,Utah
-a_offset[27],1.034,0.053,Oklahoma
-a_offset[28],-0.988,0.057,Connecticut
-a_offset[29],0.46,0.053,Kansas
-a_offset[30],-0.82,0.058,New Mexico
-a_offset[31],0.752,0.059,Alabama
-a_offset[32],1.005,0.064,Kentucky
-a_offset[33],-0.434,0.06,Maine
-a_offset[34],1.054,0.065,South Dakota
-a_offset[35],-1.181,0.075,Rhode Island
-a_offset[36],1.269,0.079,Arkansas
-a_offset[37],-1.001,0.074,Oregon
-a_offset[38],0.803,0.079,Indiana
-a_offset[39],0.608,0.073,Nebraska
-a_offset[40],-1.203,0.078,ME-1
-a_offset[41],0.778,0.072,ME-2
-a_offset[42],-2.069,0.073,Vermont
-a_offset[43],0.498,0.103,Louisiana
-a_offset[44],0.63,0.108,Mississippi
-a_offset[45],1.34,0.107,Idaho
-a_offset[46],1.79,0.103,West Virginia
-a_offset[47],2.13,0.113,North Dakota
-a_offset[48],2.711,0.114,Wyoming
+mu_b0,0.5,0.002,
+a_offset[0],-0.315,0.015,Pennsylvania
+a_offset[1],-0.083,0.015,Georgia
+a_offset[2],-0.283,0.016,Michigan
+a_offset[3],-0.169,0.015,Arizona
+a_offset[4],-0.344,0.018,Wisconsin
+a_offset[5],-0.055,0.018,North Carolina
+a_offset[6],-0.148,0.018,Nevada
+a_offset[7],-1.617,0.025,California
+a_offset[8],0.177,0.022,Ohio
+a_offset[9],-0.02,0.024,Texas
+a_offset[10],-0.097,0.024,Florida
+a_offset[11],-0.651,0.023,New Hampshire
+a_offset[12],-1.098,0.024,New York
+a_offset[13],1.139,0.028,Tennessee
+a_offset[14],0.241,0.025,Iowa
+a_offset[15],-0.638,0.027,Virginia
+a_offset[16],0.56,0.03,Missouri
+a_offset[17],-0.714,0.028,Colorado
+a_offset[18],0.682,0.033,Montana
+a_offset[19],0.49,0.034,South Carolina
+a_offset[20],-1.147,0.038,Washington
+a_offset[21],-0.667,0.04,Minnesota
+a_offset[22],-1.764,0.038,Massachusetts
+a_offset[23],-1.528,0.042,Maryland
+a_offset[24],-1.028,0.042,Illinois
+a_offset[25],0.118,0.049,Alaska
+a_offset[26],0.239,0.05,Utah
+a_offset[27],1.036,0.047,Oklahoma
+a_offset[28],-0.989,0.049,Connecticut
+a_offset[29],0.463,0.048,Kansas
+a_offset[30],-0.821,0.051,New Mexico
+a_offset[31],0.752,0.053,Alabama
+a_offset[32],1.008,0.057,Kentucky
+a_offset[33],-0.434,0.051,Maine
+a_offset[34],1.055,0.058,South Dakota
+a_offset[35],-1.183,0.068,Rhode Island
+a_offset[36],1.27,0.07,Arkansas
+a_offset[37],-1.002,0.065,Oregon
+a_offset[38],0.803,0.072,Indiana
+a_offset[39],0.612,0.063,Nebraska
+a_offset[40],-1.204,0.072,ME-1
+a_offset[41],0.78,0.071,ME-2
+a_offset[42],-2.07,0.065,Vermont
+a_offset[43],0.498,0.093,Louisiana
+a_offset[44],0.633,0.095,Mississippi
+a_offset[45],1.343,0.097,Idaho
+a_offset[46],1.794,0.096,West Virginia
+a_offset[47],2.133,0.102,North Dakota
+a_offset[48],2.715,0.097,Wyoming
 Live Phone,0.022,0.002,
-Online Panel,0.028,0.002,
+Online Panel,0.028,0.001,
 Other,0.026,0.001,
 month,0.0,0.01,
 rep_poll,-0.001,0.002,
 sample_size,0.0,0.01,
 MultiCandidate,0.012,0.001,
 lv,-0.003,0.001,
-rv,-0.003,0.002,
+rv,-0.003,0.001,
 grade,0.007,0.002,
 sigma_b0,0.104,0.002,
-error,0.023,0.001,
+error,0.022,0.001,
