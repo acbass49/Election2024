@@ -63,7 +63,7 @@ def get_data():
         'sample_size',
         'MultiCandidate',
         'end_date',
-        'fte_grade',
+        'numeric_grade',
         'pct'
     ]
 
@@ -83,36 +83,8 @@ def get_data():
             [cols_to_keep]
     )
 
-    categories = [
-        'A+',
-        'A',
-        'A-',
-        'A/B',
-        'B+',
-        'B',
-        'B-',
-        'B/C',
-        'C+',
-        'C',
-        'C-',
-        'C/D'
-    ]
-
     # There are missing grades, so need to impute
-    data.fte_grade = data.fte_grade.astype("category") \
-        .cat.set_categories(categories, ordered=True)
-
-    def find_median_category(data):
-        value_counts = data.value_counts()
-        sorted_counts = value_counts.sort_index()
-        sorted_props = sorted_counts/sum(sorted_counts)*100
-        index_of_median = (len(sorted_props) - \
-            sum(sorted_props.cumsum()>50)) -1
-        return sorted_props.index[index_of_median]
-
-    median_cat = find_median_category(data.fte_grade)
-
-    data.fte_grade = data.fte_grade.fillna(median_cat)
+    data.numeric_grade = data.numeric_grade.fillna(data.numeric_grade.median())
 
     data = (
         data
@@ -154,9 +126,9 @@ def get_data():
         .drop(columns = ['a']) \
         .astype('int')
     
-    data['grade'] = (data.fte_grade > 'B/C').astype('int')
+    data['grade'] = (data.numeric_grade >= 2).astype("int")
     
-    data.drop(columns = ['methodology', 'population', 'fte_grade'], inplace = True)
+    data.drop(columns = ['methodology', 'population', 'numeric_grade'], inplace = True)
     
     data = pd.concat([data,method,population], axis=1)
 
@@ -200,10 +172,6 @@ def make_state_predictions(model, states_dict, x_matrix, trace):
         for i in range(pred_matrix.shape[1]):
             val = np.divide(np.sum(np.greater(pred_matrix[:,i],0.5)),len(pred_matrix[:,1]))
             val = round(float(val)*100,2)
-            if val > 99:
-                val = 99
-            if val < 1:
-                val = 1
             results[list(states_dict.keys())[i]] = val  
         
         # Add in states not in polling dataset
@@ -479,6 +447,86 @@ def save_priors(trace, state_dict):
     )
     priors.to_csv('./data/priors.csv', index=False)
 
+def estimate_bayes_beta_cstm_priors(y_vec, x_matrix, state_dict, priors):
+    n_state = len(state_dict)
+    state_r = x_matrix.state.values
+
+    with pm.Model() as model:
+        
+        #hyperpriors for intercepts
+        mu_b0 = pm.Normal(
+            'mu_b0', 
+            get_prior('mu_b0', 'mean', priors), 
+            sigma=get_prior('mu_b0', 'sd', priors))
+        sigma_b0 = pm.HalfCauchy('sigma_b0', get_prior('sigma_b0', 'mean', priors))
+        
+        # Random intercepts as offsets
+        mns = []
+        sds = []
+        
+        for state,num in state_dict.items():
+            if not priors.query('state == @state').empty:
+                mn = priors.query('state == @state')['mean'].iloc[0]
+                sd = priors.query('state == @state')['sd'].iloc[0]
+            else:
+                mn = 0,
+                sd = 1
+            mns.append(mn)
+            sds.append(sd)
+        
+        a_offset = pm.Normal('a_offset', mu=0, sigma=10, shape=n_state)
+        b0 = pm.Deterministic("Intercept", mu_b0 + a_offset*sigma_b0)
+
+        # Setting data
+        X1 = pm.MutableData("X1", x_matrix['Live Phone'].values)
+        X2 = pm.MutableData("X2", x_matrix['Online Panel'].values)
+        X3 = pm.MutableData("X3", x_matrix['Other'].values)
+        X4 = pm.MutableData("X4", x_matrix['month'].values)
+        X5 = pm.MutableData("X5", x_matrix['rep_poll'].values)
+        X6 = pm.MutableData("X6", x_matrix['sample_size'].values)
+        X7 = pm.MutableData("X7", x_matrix['MultiCandidate'].values)
+        X8 = pm.MutableData("X8", x_matrix['lv'].values)
+        X9 = pm.MutableData("X9", x_matrix['rv'].values)
+        X10 = pm.MutableData("X10", x_matrix['grade'].values)
+        Y_obs = pm.MutableData("Y_obs", y_vec)
+        states = pm.MutableData("states", state_r)
+
+        b1 = pm.Normal("Live Phone", mu=get_prior('Live Phone', 'mean', priors), sigma=get_prior('Live Phone', 'sd', priors))
+        b2 = pm.Normal("Online Panel", mu=get_prior('Online Panel', 'mean', priors), sigma=get_prior('Online Panel', 'sd', priors))
+        b3 = pm.Normal("Other", mu=get_prior('Other', 'mean', priors), sigma=get_prior('Other', 'sd', priors))
+        b4 = pm.Normal("month", mu=get_prior('month', 'mean', priors), sigma=get_prior('month', 'sd', priors))
+        b5 = pm.Normal("rep_poll", mu=get_prior('rep_poll', 'mean', priors), sigma=get_prior('rep_poll', 'sd', priors))
+        b6 = pm.Normal("sample_size", mu=get_prior('sample_size', 'mean', priors), sigma=get_prior('sample_size', 'sd', priors))
+        b7 = pm.Normal("MultiCandidate", mu=get_prior('MultiCandidate', 'mean', priors), sigma=get_prior('MultiCandidate', 'sd', priors))
+        b8 = pm.Normal("lv", mu=get_prior('lv', 'mean', priors), sigma=get_prior('lv', 'sd', priors))
+        b9 = pm.Normal("rv", mu=get_prior('rv', 'mean', priors), sigma=get_prior('rv', 'sd', priors))
+        b10 = pm.Normal("grade", mu=get_prior('grade', 'mean', priors), sigma=get_prior('grade', 'sd', priors))
+
+        Mu =  pm.invlogit(
+            b0[states] + 
+            b1*X1 + 
+            b2*X2 + 
+            b3*X3 + 
+            b4*X4 +
+            b5*X5 +
+            b6*X6 +
+            b7*X7 +
+            b8*X8 +
+            b9*X9 +
+            b10*X10
+        )
+
+        Phi = pm.Normal('phi', 100)
+        
+        A = pm.Deterministic('A', pm.math.switch(Mu*Phi <= 0, -np.inf, Mu*Phi))
+        B = pm.Deterministic('B', pm.math.switch(Phi-A <= 0, -np.inf, Phi-A))
+        
+        obs = pm.Beta('y', alpha = A, beta = B,observed=Y_obs)
+
+        trace = pm.sample(1000, tune=1000, cores=1, init = 'adapt_diag', target_accept = 0.9) #,  
+
+        return model, trace
+
 def estimate_bayes_beta(y_vec, x_matrix, state_dict):
     n_state = len(state_dict)
     state_r = x_matrix.state.values
@@ -546,15 +594,3 @@ def estimate_bayes_beta(y_vec, x_matrix, state_dict):
         trace = pm.sample(1000, tune=1000, cores=1, init = 'adapt_diag', target_accept = 0.9) #,  
 
         return model, trace
-
-# # #reset tracking csv
-# win_perc = 0.18
-
-# from datetime import datetime
-# current_date = datetime.now().date()
-
-# pd.DataFrame({
-#     'Candidate':['Trump', 'Biden'],
-#     'Win Percentage':[win_perc, 1-win_perc], #perhaps add a confidence interval to this?
-#     'Date' : current_date
-# }).to_csv("./data/tracking_data.csv", index = False)

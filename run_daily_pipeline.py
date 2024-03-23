@@ -5,19 +5,26 @@
 from election_utils import get_data, \
     make_state_predictions, estimate_bayes_heirarchal, \
     run_simulation, calc_simulation_interval, \
-    estimate_bayes_heirarchal_cstm_priors, save_priors
+    estimate_bayes_heirarchal_cstm_priors, save_priors, \
+    estimate_bayes_beta, estimate_bayes_beta_cstm_priors
 import pandas as pd
 import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
+
+reset_priors = False
 
 # Fetch Data
 y_vec, x_matrix, state_dict = get_data()
 priors = pd.read_csv('./data/priors.csv')
 
 # Estimate Model
-model, trace = estimate_bayes_heirarchal_cstm_priors(y_vec, x_matrix, state_dict, priors)
-save_priors(trace, state_dict)
+if reset_priors:
+    model, trace = estimate_bayes_beta(y_vec, x_matrix, state_dict)
+    save_priors(trace, state_dict)
+if not reset_priors:
+    model, trace = estimate_bayes_beta_cstm_priors(y_vec, x_matrix, state_dict, priors)
+    save_priors(trace, state_dict)
 
 # Predict State Level Probabilities
 preds = make_state_predictions(model, state_dict, x_matrix, trace)
@@ -41,6 +48,7 @@ LB, UB = calc_simulation_interval(sim_data)
 
 # Add new row to tracker
 tracking_data = pd.read_csv("./data/tracking_data.csv")
+tracking_data = tracking_data.assign(Date = pd.to_datetime(tracking_data['Date']))
 current_date = datetime.now().date()
 
 new_row = pd.DataFrame({
@@ -50,6 +58,8 @@ new_row = pd.DataFrame({
     'LB' : [LB,(1-win_perc)-(win_perc-LB)],
     'UB' : [UB,(1-win_perc)+(UB-win_perc)]
 })
+
+tracking_data = tracking_data.query("Date != @current_date").reset_index(drop=True)
 
 tracking_data = pd.concat([tracking_data, new_row])
 
