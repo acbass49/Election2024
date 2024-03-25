@@ -48,7 +48,7 @@ LB, UB = calc_simulation_interval(sim_data)
 
 # Add new row to tracker
 tracking_data = pd.read_csv("./data/tracking_data.csv")
-tracking_data = tracking_data.assign(Date = pd.to_datetime(tracking_data['Date']))
+tracking_data = tracking_data.assign(Date = pd.to_datetime(tracking_data['Date'], format='mixed'))
 current_date = datetime.now().date()
 
 new_row = pd.DataFrame({
@@ -62,6 +62,8 @@ new_row = pd.DataFrame({
 tracking_data = tracking_data.query("Date != @current_date").reset_index(drop=True)
 
 tracking_data = pd.concat([tracking_data, new_row])
+
+tracking_data = tracking_data.assign(Date = pd.to_datetime(tracking_data['Date']))
 
 # Saving Data
 prob_data.to_csv("./data/state_probabilities.csv", index = False)
