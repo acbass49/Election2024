@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import pymc as pm
 import arviz as az
+from pytensor.printing import Print
 
 def get_data():
 
@@ -186,8 +187,8 @@ def make_state_predictions(model, states_dict, x_matrix, trace):
 
         old_data = old_data.loc[~old_data.state.isin(states_to_drop),:]
         
-        for row in old_data.iterrows():
-            results[row[1][0]] = row[1][1]
+        for i,row in old_data.iterrows():
+            results[row.iloc[0]] = row.iloc[1]
         
         return {k:v for k,v in results.items() if k != 'National'}
 
@@ -588,6 +589,75 @@ def estimate_bayes_beta(y_vec, x_matrix, state_dict):
         
         A = pm.Deterministic('A', pm.math.switch(Mu*Phi <= 0, -np.inf, Mu*Phi))
         B = pm.Deterministic('B', pm.math.switch(Phi-A <= 0, -np.inf, Phi-A))
+        
+        obs = pm.Beta('y', alpha = A, beta = B,observed=Y_obs)
+
+        trace = pm.sample(1000, tune=1000, cores=1, init = 'adapt_diag', target_accept = 0.9) #,  
+
+        return model, trace
+
+def estimate_bayes_beta_alt(y_vec, x_matrix, state_dict):
+    n_state = len(state_dict)
+    state_r = x_matrix.state.values
+    
+    sgma = 0.01
+
+    with pm.Model() as model:
+        
+        sgma = 1
+        
+        # Random intercepts as offsets
+        mu_b0 = pm.Normal('mu_b0', 0, sigma=1)
+        sigma_b0 = pm.HalfCauchy('sigma_b0', 1)
+        
+        # Random intercepts as offsets
+        a_offset = pm.Normal('a_offset', mu=0, sigma=10, shape=n_state)
+        b0 = pm.Deterministic("Intercept", mu_b0 + a_offset*sigma_b0)
+
+        # Setting data
+        X1 = pm.MutableData("X1", x_matrix['Live Phone'].values)
+        X2 = pm.MutableData("X2", x_matrix['Online Panel'].values)
+        X3 = pm.MutableData("X3", x_matrix['Other'].values)
+        X4 = pm.MutableData("X4", x_matrix['month'].values)
+        X5 = pm.MutableData("X5", x_matrix['rep_poll'].values)
+        X6 = pm.MutableData("X6", x_matrix['sample_size'].values)
+        X7 = pm.MutableData("X7", x_matrix['MultiCandidate'].values)
+        X8 = pm.MutableData("X8", x_matrix['lv'].values)
+        X9 = pm.MutableData("X9", x_matrix['rv'].values)
+        X10 = pm.MutableData("X10", x_matrix['grade'].values)
+        Y_obs = pm.MutableData("Y_obs", y_vec)
+        states = pm.MutableData("states", state_r)
+
+        b1 = pm.Normal("Live Phone", mu=0, sigma=sgma)
+        b2 = pm.Normal("Online Panel", mu=0, sigma=sgma)
+        b3 = pm.Normal("Other", mu=0, sigma=sgma)
+        b4 = pm.Normal("month", mu=0, sigma=0.1)
+        b5 = pm.Normal("rep_poll", mu=0, sigma=sgma)
+        b6 = pm.Normal("sample_size", mu=0, sigma=10)
+        b7 = pm.Normal("MultiCandidate", mu=0, sigma=sgma)
+        b8 = pm.Normal("lv", mu=0, sigma=sgma)
+        b9 = pm.Normal("rv", mu=0, sigma=sgma)
+        b10 = pm.Normal("grade", mu=0, sigma=sgma)
+
+        Mu =  pm.invlogit(
+            b0[states] + 
+            b1*X1 + 
+            b2*X2 + 
+            b3*X3 + 
+            b4*X4 +
+            b5*X5 +
+            b6*X6 +
+            b7*X7 +
+            b8*X8 +
+            b9*X9 +
+            b10*X10
+        )
+
+        sd = pm.HalfNormal('sd', sigma = 35)
+        Phi = ((Mu * (1 - Mu)) / (sd**2 - 1))
+        
+        A = Mu*Phi
+        B = Phi-A
         
         obs = pm.Beta('y', alpha = A, beta = B,observed=Y_obs)
 

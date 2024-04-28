@@ -1,7 +1,8 @@
 from election_utils import get_data, \
     make_state_predictions, estimate_bayes_heirarchal, \
     run_simulation, calc_simulation_interval, \
-    estimate_bayes_beta
+    estimate_bayes_beta, estimate_bayes_beta_alt, \
+    estimate_bayes_beta_cstm_priors
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -13,7 +14,37 @@ import pymc as pm
 y_vec, x_matrix, state_dict = get_data()
 
 # Estimate Model
+model, trace = estimate_bayes_beta_alt(y_vec, x_matrix, state_dict)
+
+preds = make_state_predictions(model, state_dict, x_matrix, trace)
+
+win_perc, sim_data = run_simulation(preds, 50000)
+
+
+
+# Estimate Model
 model, trace = estimate_bayes_beta(y_vec, x_matrix, state_dict)
+
+preds = make_state_predictions(model, state_dict, x_matrix, trace)
+
+win_perc, sim_data = run_simulation(preds, 50000)
+
+
+
+
+# Estimate Model
+priors = pd.read_csv('./data/priors.csv')
+priors.sd = priors.sd * 20
+model, trace = estimate_bayes_beta_cstm_priors(y_vec, x_matrix, state_dict, priors)
+
+preds = make_state_predictions(model, state_dict, x_matrix, trace)
+
+win_perc, sim_data = run_simulation(preds, 50000)
+
+
+
+
+
 
 az.plot_trace(trace)
 
