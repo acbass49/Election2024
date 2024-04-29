@@ -17,7 +17,7 @@ reset_priors = False
 # Fetch Data
 y_vec, x_matrix, state_dict = get_data()
 priors = pd.read_csv('./data/priors.csv')
-priors.sd = priors.sd * 15 # added this because priors were too strong
+priors.sd = priors.sd * 10 # added this because priors were too strong
 
 # Estimate Model
 if reset_priors:
