@@ -12,8 +12,8 @@ import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
 
-reset_priors = False
-reset_tracker = False
+reset_priors = True
+reset_tracker = True
 
 # Fetch Data
 y_vec, x_matrix, state_dict = get_data()
