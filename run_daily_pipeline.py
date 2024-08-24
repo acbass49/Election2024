@@ -13,6 +13,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 
 reset_priors = False
+reset_tracker = False
 
 # Fetch Data
 y_vec, x_matrix, state_dict = get_data()
@@ -48,21 +49,32 @@ prob_data = pd.DataFrame({
 LB, UB = calc_simulation_interval(sim_data)
 
 # Add new row to tracker
-tracking_data = pd.read_csv("./data/tracking_data.csv")
-tracking_data = tracking_data.assign(Date = pd.to_datetime(tracking_data['Date'], format='mixed'))
-current_date = datetime.now().date()
+if reset_tracker:
+    current_date = datetime.now().date()
 
-new_row = pd.DataFrame({
-    'Candidate':['Trump', 'Biden'],
-    'Win Percentage':[win_perc, 1-win_perc], #perhaps add a confidence interval to this?
-    'Date' : current_date,
-    'LB' : [LB,(1-win_perc)-(win_perc-LB)],
-    'UB' : [UB,(1-win_perc)+(UB-win_perc)]
-})
+    tracking_data = pd.DataFrame({
+        'Candidate':['Trump', 'Biden'],
+        'Win Percentage':[win_perc, 1-win_perc],
+        'Date' : current_date,
+        'LB' : [LB,(1-win_perc)-(win_perc-LB)],
+        'UB' : [UB,(1-win_perc)+(UB-win_perc)]
+    })
+else: 
+    tracking_data = pd.read_csv("./data/tracking_data.csv")
+    tracking_data = tracking_data.assign(Date = pd.to_datetime(tracking_data['Date'], format='mixed'))
+    current_date = datetime.now().date()
 
-tracking_data = tracking_data.query("Date != @current_date").reset_index(drop=True)
+    new_row = pd.DataFrame({
+        'Candidate':['Trump', 'Biden'],
+        'Win Percentage':[win_perc, 1-win_perc],
+        'Date' : current_date,
+        'LB' : [LB,(1-win_perc)-(win_perc-LB)],
+        'UB' : [UB,(1-win_perc)+(UB-win_perc)]
+    })
 
-tracking_data = pd.concat([tracking_data, new_row])
+    tracking_data = tracking_data.query("Date != @current_date").reset_index(drop=True)
+
+    tracking_data = pd.concat([tracking_data, new_row])
 
 tracking_data = tracking_data.assign(Date = pd.to_datetime(tracking_data['Date']))
 

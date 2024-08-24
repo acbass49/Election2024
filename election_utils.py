@@ -45,11 +45,11 @@ def get_data():
             print(data)
             raise Exception("Something weird going on")
         #identify non biden v trump questions
-        trump_biden_ids = [19368,16651]
+        candidate_ids = [16661,16651]
         keep = set(data['candidate_id'].to_list()) \
-            .intersection(set(trump_biden_ids))
+            .intersection(set(candidate_ids))
         keep = int(len(keep)>1)
-        data['trump_v_biden'] = keep
+        data['candidate_vs'] = keep
         return data
 
     def rescale_to_100(data):
@@ -73,10 +73,10 @@ def get_data():
             .groupby("question_id")
             .apply(identify_multi_candidate)
             .reset_index(drop=True)
-            .query('trump_v_biden == 1')
-            .drop(columns = ['trump_v_biden'])
+            .query('candidate_vs == 1')
+            .drop(columns = ['candidate_vs'])
             .reset_index(drop=True)
-            .query('candidate_id == 19368 or candidate_id == 16651')
+            .query('candidate_id == 16661 or candidate_id == 16651')
             .groupby("question_id")
             .apply(rescale_to_100)
             .reset_index(drop=True)
