@@ -53,7 +53,7 @@ if reset_tracker:
     current_date = datetime.now().date()
 
     tracking_data = pd.DataFrame({
-        'Candidate':['Trump', 'Biden'],
+        'Candidate':['Trump', 'Harris'],
         'Win Percentage':[win_perc, 1-win_perc],
         'Date' : current_date,
         'LB' : [LB,(1-win_perc)-(win_perc-LB)],
@@ -65,7 +65,7 @@ else:
     current_date = datetime.now().date()
 
     new_row = pd.DataFrame({
-        'Candidate':['Trump', 'Biden'],
+        'Candidate':['Trump', 'Harris'],
         'Win Percentage':[win_perc, 1-win_perc],
         'Date' : current_date,
         'LB' : [LB,(1-win_perc)-(win_perc-LB)],

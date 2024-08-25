@@ -155,7 +155,7 @@ def make_state_predictions(model, states_dict, x_matrix, trace):
             "X4": [x_matrix['month'].max() for x in range(len(states_dict))],
             "X5": [1 for x in range(len(states_dict))],
             "X6": [2000 for x in range(len(states_dict))],
-            "X7": [1 for x in range(len(states_dict))],
+            "X7": [0 for x in range(len(states_dict))],
             "X8": [1 for x in range(len(states_dict))],
             "X9": [0 for x in range(len(states_dict))],
             "X10": [1 for x in range(len(states_dict))],
