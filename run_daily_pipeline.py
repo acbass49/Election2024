@@ -13,7 +13,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 
 reset_priors = False
-reset_tracker = True
+reset_tracker = False
 
 # Fetch Data
 y_vec, x_matrix, state_dict = get_data()
