@@ -12,7 +12,7 @@ import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
 
-reset_priors = True
+reset_priors = False
 reset_tracker = True
 
 # Fetch Data

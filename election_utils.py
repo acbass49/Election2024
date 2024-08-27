@@ -150,12 +150,12 @@ def make_state_predictions(model, states_dict, x_matrix, trace):
     with model:
         pm.set_data({
             "X1": [0 for x in range(len(states_dict))],
-            "X2": [0 for x in range(len(states_dict))],
+            "X2": [1 for x in range(len(states_dict))],
             "X3": [0 for x in range(len(states_dict))],
             "X4": [x_matrix['month'].max() for x in range(len(states_dict))],
             "X5": [1 for x in range(len(states_dict))],
             "X6": [2000 for x in range(len(states_dict))],
-            "X7": [0 for x in range(len(states_dict))],
+            "X7": [1 for x in range(len(states_dict))],
             "X8": [1 for x in range(len(states_dict))],
             "X9": [0 for x in range(len(states_dict))],
             "X10": [1 for x in range(len(states_dict))],
@@ -541,8 +541,6 @@ def estimate_bayes_beta(y_vec, x_matrix, state_dict):
         # Random intercepts as offsets
         mu_b0 = pm.Normal('mu_b0', 0, sigma=1)
         sigma_b0 = pm.HalfCauchy('sigma_b0', 1)
-        
-        # Random intercepts as offsets
         a_offset = pm.Normal('a_offset', mu=0, sigma=10, shape=n_state)
         b0 = pm.Deterministic("Intercept", mu_b0 + a_offset*sigma_b0)
 
