@@ -35,7 +35,7 @@ preds = make_state_predictions(model, state_dict, x_matrix, trace)
 win_perc, sim_data = run_simulation(preds, 50000)
 
 # A Few Post-Processing Steps
-sim_data = sim_data.assign(winner = lambda x:np.where(x.winner == 0, "Biden", "Trump"))
+sim_data = sim_data.assign(winner = lambda x:np.where(x.winner == 0, "Harris", "Trump"))
 to_join = pd.read_csv('https://raw.githubusercontent.com/jasonong/List-of-US-States/master/states.csv')
 prob_data = pd.DataFrame({
     'State':list(preds.keys()),
