@@ -1,3 +1,5 @@
+# This was used as a GitHub Action to update the election data daily
+# moving this into the main directory for reference
 # name: 'Update Election Datasets'
 
 # on:
